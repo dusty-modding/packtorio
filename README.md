@@ -1,7 +1,7 @@
 # Packtorio
 A simple packing script used to take my factorio mod and pack it into a zip that gets placed in the mods folder
 
-This tool is built mostly for my use, however I can make it more stream lined if the people have a desire to actively use this tool.
+This tool is built mostly for my use, however I can make it more stream lined if more people have a desire to actively use this tool.
 
 ## How To
 
