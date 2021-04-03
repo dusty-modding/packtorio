@@ -8,19 +8,20 @@ require('dotenv').config()
 const ROUTE = path.join(process.env.ROUTE, process.env.MOD)
 const IGNORE = new Set(['.git', '.gitignore', '.vscode'])
 
-function pack (files, folders = [process.env.MOD], zip = new JSZip()) {
-  const currZip = zip.folder(folders[folders.length - 1])
+function pack (files, zip, folders = [process.env.MOD]) {
+  const currZip = zip.folder(path.join(...folders))
   const currRoute = path.join('..', 'factorio', ...folders)
 
   for (const f of files) {
     if (!IGNORE.has(f)) {
-      console.log(`Zipping: ${f}`)
       const stat = fs.statSync(path.join(currRoute, f))
 
       if (stat.isDirectory()) {
-        pack(fs.readdirSync(path.join(currRoute, f)), folders.concat(f), currZip)
+        console.log('Packing Folder:', f)
+        pack(fs.readdirSync(path.join(currRoute, f)), currZip, folders.concat(f))
       } else {
-        currZip.file(f, fs.readFileSync(path.join(currRoute, f), 'utf-8'))
+        console.log('Zipping:', f)
+        currZip.file(path.join(...[...folders, f]), fs.readFileSync(path.join(currRoute, f), 'utf-8'))
       }
     }
   }
@@ -28,11 +29,13 @@ function pack (files, folders = [process.env.MOD], zip = new JSZip()) {
   return currZip
 }
 
+const zip = new JSZip()
+
 Promise.all([
   fsp.readdir(ROUTE),
   fsp.readFile(path.join(ROUTE, 'info.json'))
 ])
-  .then(([files, jsonBuffer]) => [pack(files), JSON.parse(jsonBuffer)])
+  .then(([files, jsonBuffer]) => [pack(files, zip.folder(process.env.MOD)), JSON.parse(jsonBuffer)])
   .then(([zip, { name, version }]) =>
     Promise.all([zip.generateAsync({ type: 'nodebuffer' }), `${name}_${version}.zip`]))
   .then(([buffer, modName]) => fsp.writeFile(path.join(process.env.DEST, modName), buffer))
