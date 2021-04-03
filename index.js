@@ -36,7 +36,7 @@ Promise.all([
 ])
   .then(([files, jsonBuffer]) => [pack(files, zip.folder(process.env.MOD)), JSON.parse(jsonBuffer)])
   .then(([zip, { name, version }]) =>
-    Promise.all([zip.generateAsync({ type: 'nodebuffer' }), `${name}_${version}.zip`]))
+    Promise.all([zip.generateAsync({ type: 'nodebuffer', platform: 'UNIX' }), `${name}_${version}.zip`]))
   .then(([buffer, modName]) => fsp.writeFile(path.join(process.env.DEST, modName), buffer))
   .then(() => console.log('Mod Zip Written'))
   .catch(console.error)
