@@ -9,7 +9,6 @@ const ROUTE = path.join(process.env.ROUTE, process.env.MOD)
 const IGNORE = new Set(['.git', '.gitignore', '.vscode'])
 
 function pack (files, zip, folders = [process.env.MOD]) {
-  const currZip = zip.folder(path.join(...folders))
   const currRoute = path.join('..', 'factorio', ...folders)
 
   for (const f of files) {
@@ -18,15 +17,15 @@ function pack (files, zip, folders = [process.env.MOD]) {
 
       if (stat.isDirectory()) {
         console.log('Packing Folder:', f)
-        pack(fs.readdirSync(path.join(currRoute, f)), currZip, folders.concat(f))
+        pack(fs.readdirSync(path.join(currRoute, f)), zip, folders.concat(f))
       } else {
         console.log('Zipping:', f)
-        currZip.file(path.join(...[...folders, f]), fs.readFileSync(path.join(currRoute, f), 'utf-8'))
+        zip.file(path.join(...[...folders, f]), fs.readFileSync(path.join(currRoute, f), 'utf-8'))
       }
     }
   }
 
-  return currZip
+  return zip
 }
 
 const zip = new JSZip()
