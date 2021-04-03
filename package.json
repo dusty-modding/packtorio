@@ -1,0 +1,20 @@
+{
+  "name": "packtorio",
+  "version": "0.1.0",
+  "description": "A simple mod packaging tool for factorio modding",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "factorio",
+    "pack",
+    "modding"
+  ],
+  "author": "Dustin Hershman",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "jszip": "^3.6.0"
+  }
+}
